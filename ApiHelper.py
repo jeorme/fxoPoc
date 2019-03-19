@@ -41,23 +41,14 @@ def post(url, json):
     """REST CALL : PUT"""
     reponse = requests.post(url, json=json, verify=False,headers={'Connection':'close'})
     if (reponse.ok):
-        val= reponse.json()
+        if(reponse.status_code==201):
+            val = reponse.headers._store['location'][1]
+        else:
+            val= reponse.json()
     elif(reponse.status_code==400):
         val= reponse.text
     else:
         status = reponse.raise_for_status()
         val =  "error : " + status
-    reponse.close()
-    return val
-
-def putCurrencyPair(url = fcp_CurrencyPair,  id=currency_pair, body = body):
-    reponse = requests.post(url, json=json, verify=False, headers={'Connection': 'close'})
-    if (reponse.ok):
-        val = reponse.json()
-    elif (reponse.status_code == 400):
-        val = reponse.text
-    else:
-        status = reponse.raise_for_status()
-        val = "error : " + status
     reponse.close()
     return val
