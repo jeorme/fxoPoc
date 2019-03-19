@@ -49,3 +49,15 @@ def post(url, json):
         val =  "error : " + status
     reponse.close()
     return val
+
+def putCurrencyPair(url = fcp_CurrencyPair,  id=currency_pair, body = body):
+    reponse = requests.post(url, json=json, verify=False, headers={'Connection': 'close'})
+    if (reponse.ok):
+        val = reponse.json()
+    elif (reponse.status_code == 400):
+        val = reponse.text
+    else:
+        status = reponse.raise_for_status()
+        val = "error : " + status
+    reponse.close()
+    return val
