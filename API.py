@@ -15,3 +15,11 @@ fxPair = {
   "value": 1.12
 }
 url_fxpair = post(url = fcp_fxPair, json=fxPair)
+
+#urls for fcc
+
+fcc_marketset = "http://fr1cslfcglo0056.misys.global.ad:30005/api/fcc/marketset"
+MD = {  "description": "test_MarketSet",   "name": "testMS" }
+#post MD
+#add static :
+#https://fr1cslfcglo0056.misys.global.ad:30005/doc/#/default/post_staticData_documents_v2_processdocuments
