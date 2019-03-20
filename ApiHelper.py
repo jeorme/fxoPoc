@@ -1,7 +1,6 @@
 import requests
 import json
-
-
+#helper
 def get(url):
     """REST CALL : GET"""
     reponse = requests.get(url, verify=False)
@@ -14,11 +13,11 @@ def get(url):
     return val
 
 
-def delete(url,json ):
+def delete(url ):
     """REST CALL : DELETE"""
-    reponse = requests.delete(url, json=json,verify=False)
+    reponse = requests.delete(url,verify=False)
     if (reponse.ok):
-        val = "currency deleted"
+        val = "data deleted"
     else:
         status = reponse.raise_for_status()
         val = "error : " + status
@@ -30,7 +29,7 @@ def put(url, json):
     """REST CALL : PUT"""
     reponse = requests.put(url, json=json, verify=False)
     if (reponse.ok):
-        val = json.loads(reponse.content)
+        val = "build"
     else:
         status = reponse.raise_for_status()
         val = "error : " + status
@@ -38,9 +37,9 @@ def put(url, json):
     return val
 
 def post(url, json):
-    """REST CALL : PUT"""
+    """REST CALL : POST"""
     reponse = requests.post(url, json=json, verify=False,headers={'Connection':'close'})
-    if (reponse.ok):
+    if(reponse.ok):
         if(reponse.status_code==201):
             val = reponse.headers._store['location'][1]
         else:
