@@ -1,5 +1,6 @@
 import requests
 import json
+import pandas as pd
 #helper
 def get(url):
     """REST CALL : GET"""
@@ -36,14 +37,21 @@ def put(url, json):
     reponse.close()
     return val
 
-def post(url, json):
+def post(url, json,isCsv=False):
     """REST CALL : POST"""
     reponse = requests.post(url, json=json, verify=False,headers={'Connection':'close'})
     if(reponse.ok):
         if(reponse.status_code==201):
             val = reponse.headers._store['location'][1]
         else:
-            val= reponse.json()
+            if isCsv:
+                lines = reponse.text.splitlines()
+                val = []
+                for item in range(1,len(lines)):
+                    id,npv = lines[item].split(";")
+                    val.append({"id" : id,"npv" : npv})
+            else:
+                val = reponse.json()
     elif(reponse.status_code==400):
         val= reponse.text
     else:
