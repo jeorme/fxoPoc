@@ -1,5 +1,6 @@
 from ApiHelper import post
 from ConfigHelper import getPricingId
+import pandas as pd
 
 url_fcp_swagger = "https://fr1pslcmf05:8770/api/"
 url_pricing_config = "https://fr1pslcmf05:8770/api/pricing/configs"
@@ -21,8 +22,20 @@ def unitary(configName,aod,pricingMethod,marketDataSetId,resultHandlerId,referen
     unitary_price["perimeter"] = {"trade" : {"perimeterId": perimeter}}
     unitary_price["scenarioContexts"] = scenarioContexts
     url_price = url_fcp_swagger + "pricing/price/"
-    post(url=url_price, json=unitary_price)
-    return getResult()
+    reponse = post(url=url_price, json=unitary_price)
+    if resultHandlerConfigId is None:
+        dic = reponse["pricingResults"]
+        val  = pd.DataFrame(columns=["id","npv"])
+        ids=[]
+        npvs=[]
+        for keys, values in dic.items():
+            ids.append(keys)
+            npvs.append(values["scenarios"][0]["entries"][0]["measures"]["NPV"])
+        val["id"] =ids
+        val["npv"] = npvs
+        return dic,val
+    else:
+        return getResult()
 
 def getResult(id="Pricing",dimensions="Id",measures="base_NPV"):
     url="https://fr1pslcmf05:8770/api/pricing/report/result/"+id
@@ -60,4 +73,5 @@ scenarioContexts =[
 ## perimeter : only ALL can we do it for one trade (need a creation of a perimeter)
 
 
-result = unitary(configName="DEFAULT",aod="2016-07-04",pricingMethod="THEORETICAL",marketDataSetId="$id/DEFAULT",referenceCurrency="$id/USD",marketDataProviderId="PE_STORE_MDP",resultHandlerConfigId="Default",perimeter="ALL_FX_OPTION", scenarioContexts = scenarioContexts,resultHandlerId="Report")
+result,resultPD = unitary(configName="DEFAULT",aod="2016-07-04",pricingMethod="THEORETICAL",marketDataSetId="$id/DEFAULT",referenceCurrency="$id/USD",marketDataProviderId="PE_STORE_MDP",resultHandlerConfigId=None,perimeter="ALL_FX_OPTION", scenarioContexts = scenarioContexts,resultHandlerId="Collector")
+print(resultPD)
